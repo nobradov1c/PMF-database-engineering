@@ -16,4 +16,3 @@ password: root
 - run the sql script `create_mysql_schema.sql` to create the database and tables
 
 - run generate-data.py to generate data for the database
-  
