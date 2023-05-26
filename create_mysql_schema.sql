@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `library`.`Book_has_BookStore` (
   `idBook` INT NOT NULL,
   `idBookStore` INT NOT NULL,
   `rentedCount` INT NOT NULL,
-  `availableCount` VARCHAR(45) NOT NULL,
+  `availableCount` INT NOT NULL,
   PRIMARY KEY (`idBook`, `idBookStore`),
   INDEX `fk_Book_has_BookStore_BookStore1_idx` (`idBookStore` ASC) VISIBLE,
   INDEX `fk_Book_has_BookStore_Book1_idx` (`idBook` ASC) VISIBLE,

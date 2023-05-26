@@ -13,6 +13,8 @@ LIBRARIANS_COUNT = BOOK_STORES_COUNT*4
 
 CUSTOMER_COUNT = 3000
 
+MAX_RENTED_BOOKS_PER_CUSTOMER = 5
+
 fake = Faker()
 
 # Define genres
@@ -50,6 +52,7 @@ cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
 
 
 # Generate authors
+print("Generating authors...")
 for _ in range(AUTHORS_COUNT):
     name = fake.name().split()
     first_name = name[0]
@@ -57,15 +60,21 @@ for _ in range(AUTHORS_COUNT):
     add_author = ("INSERT INTO Author (firstName, lastName) VALUES (%s, %s)")
     data_author = (first_name, last_name)
     cursor.execute(add_author, data_author)
+print("Authors generated.")
+print()
 
 # Generate publishers
+print("Generating publishers...")
 for _ in range(PUBLISHERS_COUNT):
     title = fake.company()
     add_publisher = ("INSERT INTO Publisher (title) VALUES (%s)")
     data_publisher = (title,)
     cursor.execute(add_publisher, data_publisher)
+print("Publishers generated.")
+print()
 
 # Generate books
+print("Generating books...")
 for _ in range(BOOKS_COUNT):
     title = fake.catch_phrase()[0:40]
     publishYear = random.randint(1950, 2023)
@@ -75,6 +84,8 @@ for _ in range(BOOKS_COUNT):
         "INSERT INTO Book (title, publishYear, idAuthor, idPublisher) VALUES (%s, %s, %s, %s)")
     data_book = (title, publishYear, idAuthor, idPublisher)
     cursor.execute(add_book, data_book)
+print("Books generated.")
+print()
 
 # Generate genres
 for genre in genres:
@@ -113,6 +124,7 @@ for idBook in range(1, BOOKS_COUNT + 1):
         cursor.execute(add_book_has_genre, data_book_has_genre)
 
 # Generate book stores
+print("Generating book stores...")
 for _ in range(BOOK_STORES_COUNT):
     city = fake.city()
     address = fake.street_name()
@@ -121,10 +133,13 @@ for _ in range(BOOK_STORES_COUNT):
     add_book_store = ("INSERT INTO BookStore (city, address) VALUES (%s, %s)")
     data_book_store = (city, address)
     cursor.execute(add_book_store, data_book_store)
+print("Book stores generated.")
+print()
 
 cnx.commit()
 
 # Generate librarians
+print("Generating librarians...")
 
 # make sure every library has at least one librarian
 for idBookStore in range(1, BOOK_STORES_COUNT + 1):
@@ -145,8 +160,11 @@ for _ in range(LIBRARIANS_COUNT-BOOK_STORES_COUNT):
         "INSERT INTO Librarian (firstName, lastName, idBookStore) VALUES (%s, %s, %s)")
     data_librarian = (first_name, last_name, idBookStore)
     cursor.execute(add_librarian, data_librarian)
+print("Librarians generated.")
+print()
 
 # connect books and book stores
+print("Connecting books and book stores...")
 for idBookStore in range(1, BOOK_STORES_COUNT + 1):
     books_count = random.randint(BOOKS_COUNT * 2 // 10, BOOKS_COUNT)
     books_ids = random.sample(range(1, BOOKS_COUNT + 1), books_count)
@@ -158,7 +176,8 @@ for idBookStore in range(1, BOOK_STORES_COUNT + 1):
         data_book_has_book_store = (
             idBook, idBookStore, rentedCount, availableCount)
         cursor.execute(add_book_has_book_store, data_book_has_book_store)
-
+print("Done.")
+print()
 
 # Generate customers and memberships
 
@@ -171,6 +190,7 @@ for i in range(1, len(membership_types) + 1):
     cursor.execute(add_membership_type, data_membership_type)
 
 # active memberships and customers
+print("Generating customers and memberships...")
 for _ in range(CUSTOMER_COUNT):
     expirationDate = fake.date_between(start_date='-3y', end_date='+1y')
 
@@ -190,6 +210,46 @@ for _ in range(CUSTOMER_COUNT):
     data_customer = (first_name, last_name, birthYear, cursor.lastrowid)
 
     cursor.execute(add_customer, data_customer)
+print("Done.")
+print()
+
+cnx.commit()
+
+# RentedBook table, connect customers with books
+# idCustomer, startRentDate, returnDate, rentLimitDate, idBook, idBookStore
+print("Generating rented books...")
+for idCustomer in range(1, CUSTOMER_COUNT + 1):
+    rented_books_count = random.randint(0, MAX_RENTED_BOOKS_PER_CUSTOMER)
+
+    for _ in range(rented_books_count):
+        # get random row from Book_has_BookStore table
+        # get idBook, idBookStore
+        cursor.execute(
+            "SELECT * FROM Book_has_BookStore ORDER BY RAND() LIMIT 1")
+        book_has_BookStore_entry = cursor.fetchone()
+        # print(book_has_BookStore_entry)
+
+        idBook = book_has_BookStore_entry[0]
+        idBookStore = book_has_BookStore_entry[1]
+
+        # connect customer with book
+
+        startRentDate = fake.date_between(start_date='-3y', end_date='today')
+        # date when the book is returned
+        returnDate = fake.date_between(
+            start_date=startRentDate, end_date='+1y')
+        # date when the book should be returned
+        rentLimitDate = fake.date_between(
+            start_date=returnDate, end_date='+1y')
+
+        add_rented_book = (
+            "INSERT INTO RentedBook (idCustomer, startRentDate, returnDate, rentLimitDate, idBook, idBookStore) VALUES (%s, %s, %s, %s, %s, %s)")
+
+        data_rented_book = (idCustomer, startRentDate,
+                            returnDate, rentLimitDate, idBook, idBookStore)
+        cursor.execute(add_rented_book, data_rented_book)
+print("Done.")
+print()
 
 cnx.commit()
 cursor.close()
