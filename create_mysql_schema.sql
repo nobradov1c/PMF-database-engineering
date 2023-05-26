@@ -102,7 +102,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `library`.`BookStore` (
   `idBookStore` INT NOT NULL AUTO_INCREMENT,
   `city` VARCHAR(45) NOT NULL,
-  `street` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idBookStore`),
   UNIQUE INDEX `idBookStore_UNIQUE` (`idBookStore` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -144,7 +144,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `library`.`ActiveMembership` (
   `idActiveMembership` INT NOT NULL AUTO_INCREMENT,
-  `expiredDate` DATE NOT NULL,
+  `expirationDate` DATE NOT NULL,
   `lastActiveMembershipTypeId` INT NOT NULL,
   PRIMARY KEY (`idActiveMembership`),
   UNIQUE INDEX `idActiveMembership_UNIQUE` (`idActiveMembership` ASC) VISIBLE,
