@@ -144,6 +144,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `library`.`ActiveMembership` (
   `idActiveMembership` INT NOT NULL AUTO_INCREMENT,
+  `startDate` DATE NOT NULL,
   `expirationDate` DATE NOT NULL,
   `lastActiveMembershipTypeId` INT NOT NULL,
   PRIMARY KEY (`idActiveMembership`),

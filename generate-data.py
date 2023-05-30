@@ -192,14 +192,15 @@ for i in range(1, len(membership_types) + 1):
 # active memberships and customers
 print("Generating customers and memberships...")
 for _ in range(CUSTOMER_COUNT):
-    expirationDate = fake.date_between(start_date='-3y', end_date='+1y')
+    startDate = fake.date_between(start_date='-3y', end_date='+1y')
+    expirationDate = fake.date_between(start_date=startDate, end_date='+1y')
 
     lastActiveMembershipTypeId = random.randint(1, len(membership_types))
 
     add_active_membership = (
-        "INSERT INTO ActiveMembership (expirationDate, lastActiveMembershipTypeId) VALUES (%s, %s)")
+        "INSERT INTO ActiveMembership (startDate, expirationDate, lastActiveMembershipTypeId) VALUES (%s, %s, %s)")
 
-    data_active_membership = (expirationDate, lastActiveMembershipTypeId)
+    data_active_membership = (startDate, expirationDate, lastActiveMembershipTypeId)
     cursor.execute(add_active_membership, data_active_membership)
 
     first_name = fake.first_name()
