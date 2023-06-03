@@ -30,7 +30,8 @@ cnx = mysql.connector.connect(
     password='root',
     host='127.0.0.1',
     database='library',
-    ssl_disabled=True
+    ssl_disabled=True,
+    port="3307"
 )
 cursor = cnx.cursor()
 
