@@ -105,3 +105,13 @@ ORDER BY
     rentalCount DESC
 LIMIT 10;
 ```
+
+## Prosečno vreme zadržavanja knjige
+
+```sql
+SELECT
+  CAST(FLOOR(AVG(Book_DW.averageNumberOfBookRetentionDays) / 365) AS UNSIGNED) AS broj_godina,
+  CAST(FLOOR((AVG(Book_DW.averageNumberOfBookRetentionDays) % 365) / 30) AS UNSIGNED) AS broj_meseci,
+  CAST(ROUND((AVG(Book_DW.averageNumberOfBookRetentionDays) % 365) % 30) AS UNSIGNED) AS broj_dana
+FROM Book_DW;
+```

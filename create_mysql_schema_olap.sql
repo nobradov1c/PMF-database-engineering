@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `libraryOLAP`.`Book_DW` (
   `publishYear` INT NOT NULL,
   `author` VARCHAR(100) NOT NULL,
   `publisher` VARCHAR(45) NOT NULL,
+  `averageNumberOfBookRetentionDays` DOUBLE NULL,
   PRIMARY KEY (`idBook`),
   UNIQUE INDEX `idBook_UNIQUE` (`idBook` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -34,6 +35,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `libraryOLAP`.`Genre_DW` (
   `idGenre` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
+  `totalNumberOfBooks` INT NOT NULL,
   PRIMARY KEY (`idGenre`),
   UNIQUE INDEX `idGenre_UNIQUE` (`idGenre` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -68,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `libraryOLAP`.`BookStore_DW` (
   `idBookStore` INT NOT NULL AUTO_INCREMENT,
   `city` VARCHAR(45) NOT NULL,
   `address` VARCHAR(45) NOT NULL,
+  `rentedBooksForPastMonth` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`idBookStore`),
   UNIQUE INDEX `idBookStore_UNIQUE` (`idBookStore` ASC) VISIBLE)
 ENGINE = InnoDB;
